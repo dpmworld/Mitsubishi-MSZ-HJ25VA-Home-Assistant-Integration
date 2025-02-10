@@ -31,4 +31,33 @@ I wasnt able to find a bounce of 10 120ohm SMD 0603 resistor, so I bought a kit.
 
 # Opening the MSZ-HJ25VA unit
 Opening the unit is fairly simple: you need to remove 2 small covers on the bottom left and right under the vane and unscrew 2 philips screws.<br>
-Slightly pull from the bottom after checking a push/pull plastic lock in the middle of the vane. 
+ ![IMG_20250209_165925](https://github.com/user-attachments/assets/7458a613-9210-45fd-a72b-26e8fde128eb)
+ ![IMG_20250209_165933](https://github.com/user-attachments/assets/131faec3-24f3-4d79-abce-e5b3613fabc1)
+
+ Slightly pull from the bottom after checking a push/pull plastic lock in the middle of the vane.<br>
+ ![IMG_20250209_170048](https://github.com/user-attachments/assets/4edb1b67-ed52-4e61-a8e8-47cc91f4f9df)
+
+On the left you will have access to the logic board:<br>
+![IMG_20250209_170318](https://github.com/user-attachments/assets/94275b12-6e80-4315-827e-07e6bd1de4b8)
+
+Unplug the three connectors and remove the board with the plastic cover: on the bottom left you can unlock the plastic. Gently turn the board and, once opened on the side, pull it up and remove it from the chassy. Pay attention the remove gently all the wires from the plastic.
+
+# The logic board
+Once in your hand, the logc board should look like this:<br>
+![IMG_20250209_171034](https://github.com/user-attachments/assets/acda0ef4-6f64-429a-9626-242f961b7dd8)
+![IMG_20250209_171052](https://github.com/user-attachments/assets/b663f6fd-93d8-4fb3-bade-142b75e21e14)
+
+First clean the hole where you'll need to place the connector and the resistors:<br>
+![IMG_20250209_171603](https://github.com/user-attachments/assets/d0e0b3cc-f719-41e4-8046-34d8eae2daf6)
+![IMG_20250209_171812](https://github.com/user-attachments/assets/8f1672e3-6476-4efb-9a9f-018c4e936e10)
+
+Remove the flux with isopropilic alchool (I took the picture before cleaning it), and the solder the connector and the 2 resistors. Resistors are 0603 SMD rated 1200 ohm (the lable on top is 122).<br>
+![IMG_20250209_173438](https://github.com/user-attachments/assets/274a48a7-52f9-4889-9ba8-d15307db80b1)
+![IMG_20250209_173455](https://github.com/user-attachments/assets/e45d8c9d-b9ae-4f5f-b67d-cc18b85b65a3)
+
+these are not my best tin welds, but they works!
+
+# The ATOM S3 Lite
+
+
+
