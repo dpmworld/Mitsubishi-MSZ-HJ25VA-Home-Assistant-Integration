@@ -24,7 +24,11 @@ Besides being able to solder (and you will need to solder 2 SMD resistors and a 
 - Optional PAP-05V-S connectors (https://it.aliexpress.com/item/1005007784137238.html)
 - ATOMS3 Lite ESP32S3 M5Stack (https://it.aliexpress.com/item/1005005177952629.html)
 - 4 Pin Jumper Wire HY2.0mm Pitch Pin Universal Grove Buckled Cable 20cm (https://www.amazon.it/dp/B0D4PFPSMY?ref=ppx_yo2ov_dt_b_fed_asin_title)
+- 0x 0603 SMD 1200ohm resistor (https://www.amazon.it/dp/B0DGQ6GKMD?ref=ppx_yo2ov_dt_b_fed_asin_title)
 
-<p>I choosed the Atom S3 Lite because it is very small and can be connected easly with the Grove 4 pin cable. If you want the best result, you can replace one connector of the grove cable and use the proper PAP-05V-S connector: we need only 4 wires. Alternatively you can cut one edge of the connector and the clip to let it fint into the S05B-PASK-2 connector soldered on the board.</p>
+<p>I choosed the Atom S3 Lite because it is very small and can be connected easly with the Grove 4 pin cable. If you want the best result, you can replace one connector of the grove cable and use the proper PAP-05V-S connector: we need only 4 wires. Alternatively you can cut one edge of the connector and the clip to let it fint into the S05B-PASK-2 connector soldered on the board.<br>
+I wasnt able to find a bounce of 10 120ohm SMD 0603 resistor, so I bought a kit.</p>
 
 # Opening the MSZ-HJ25VA unit
+Opening the unit is fairly simple: you need to remove 2 small covers on the bottom left and right under the vane and unscrew 2 philips screws.<br>
+Slightly pull from the bottom after checking a push/pull plastic lock in the middle of the vane. 
