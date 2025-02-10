@@ -1,4 +1,4 @@
-# Mitsubishi-MSZ-HJ25VA-Home-Assistant-Integration
+# Mitsubishi MSZ-HJ25VA Home-Assistant integration
 Modding and integrating Mitsubishi MSZ-HJ25VA HVAC into Home Assistant via ESPHome
 
 # Background information
@@ -57,7 +57,8 @@ Remove the flux with isopropilic alchool (I took the picture before cleaning it)
 
 these are not my best tin welds, but they works!
 
-# The ATOM S3 Lite
+# The ATOM S3 Lite with ESPHome
+![IMG_20250209_173758](https://github.com/user-attachments/assets/42ae5aa2-9ee2-4901-b587-da40df8a0344)
 
 
 
