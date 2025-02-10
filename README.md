@@ -58,7 +58,14 @@ Remove the flux with isopropilic alchool (I took the picture before cleaning it)
 these are not my best tin welds, but they works!
 
 # The ATOM S3 Lite with ESPHome
+Here is the M5Stack Atom S3 Lite with a 4 pin Groove connector:<br>
 ![IMG_20250209_173758](https://github.com/user-attachments/assets/42ae5aa2-9ee2-4901-b587-da40df8a0344)
 
+The cable properly fits the Atom S3 Lite and can be adapted to fill the S05B-PASK-2 on the logic board by cutting the side border (near the black cable) and the hook:<br>
+![IMG_20250209_174248](https://github.com/user-attachments/assets/3ab83282-8e8d-403a-a50b-a13560b6ab16)
+
+As a reference, you will find a sample configuration of the ESPHome device:<br>
+[mitsubishi-hvac-sample.yaml ](mitsubishi-hvac-sample.yaml)
+Please replace the <macaddress> or the names on the _substitutions_ section.
 
 
