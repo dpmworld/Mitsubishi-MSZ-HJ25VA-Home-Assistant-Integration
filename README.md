@@ -65,7 +65,7 @@ The cable properly fits the Atom S3 Lite and can be adapted to fill the S05B-PAS
 ![IMG_20250209_174248](https://github.com/user-attachments/assets/3ab83282-8e8d-403a-a50b-a13560b6ab16)
 
 As a reference, you will find a sample configuration of the ESPHome device:<br>
-[mitsubishi-hvac-sample.yaml ](mitsubishi-hvac-sample.yaml)
+[mitsubishi-hvac-sample.yaml ](mitsubishi-hvac-sample.yaml)<br>
 Please replace the <macaddress> or the names on the _substitutions_ section.
 
 
