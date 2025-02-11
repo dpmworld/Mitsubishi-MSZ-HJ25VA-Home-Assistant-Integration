@@ -1,9 +1,9 @@
 substitutions:
-  name: mitsubishi-ac-<macaddress>
-  friendly_name: Mitsubishi MSZ-HJ25 (<macaddress>)
-  id_name: hvac_<macaddress>
+  mac: <macaddress>
+  name: mitsubishi-ac-${mac}
+  friendly_name: Mitsubishi MSZ-HJ25 (${mac})
+  id_name: hvac_${mac}
   time_timezone: "Europe/Rome"
-
 
 esphome:
   name: ${name}
@@ -15,11 +15,22 @@ esp32:
   framework:
     #type: esp-idf
     type: arduino
-    
 
 # Enable logging
 logger:
-  level: INFO
+#  level: INFO
+  logs:
+    CN105Climate: INFO
+    CN105: INFO
+    SETTINGS: INFO
+    CYCLE : INFO  
+    Header: INFO 
+    EVT_SETS: INFO
+    sensor: INFO
+    chkSum : INFO
+    WRITE : INFO
+    READ : INFO
+    Decoder : INFO
 
 # Enable Home Assistant API
 api:
@@ -61,11 +72,60 @@ external_components:
   - source: github://echavet/MitsubishiCN105ESPHome
 
 # Climate entity configuration
+#
+#  CLIMATE_MODE_OFF = 0,
+#  CLIMATE_MODE_HEAT_COOL = 1,
+#  CLIMATE_MODE_COOL = 2,
+#  CLIMATE_MODE_HEAT = 3,
+#  CLIMATE_MODE_FAN_ONLY = 4,
+#  CLIMATE_MODE_DRY = 5,
+#  CLIMATE_MODE_AUTO = 6
+
 climate:
   - platform: cn105
     id: hp
     name: ${friendly_name}
     icon: mdi:heat-pump
+    on_state:
+      - logger.log: "STATUS UPDATE"
+      - lambda: |-
+          if ( id(led_switch).state ) {
+            switch ( x.mode ) {
+              case 0: // CLIMATE_MODE_OFF = 0
+                id(led).turn_off().perform();
+                break;
+              case 1: // CLIMATE_MODE_HEAT_COOL = 1
+                id(led).turn_off();
+                break;
+              case 2: // CLIMATE_MODE_COOL = 2
+                id(led).turn_on().set_rgb(0,0,1).perform();
+                id(led).turn_on().set_brightness(.3).perform();
+                break;
+              case 3: // CLIMATE_MODE_HEAT = 3
+                id(led).turn_on().set_rgb(.8,0,0).perform();
+                id(led).turn_on().set_brightness(.3).perform();
+                break;
+              case 4: // CLIMATE_MODE_FAN_ONLY = 4
+                id(led).turn_on().set_rgbw(0,0,0,1).perform();
+                id(led).turn_on().set_brightness(.3).perform();
+                break;
+              case 5: // CLIMATE_MODE_DRY = 5
+                id(led).turn_on().set_rgbw(.5,.7,1,.5).perform();
+                id(led).turn_on().set_brightness(.3).perform();
+                break;
+              case 6: // CLIMATE_MODE_AUTO = 6
+                id(led).turn_on().set_rgb(.3,1,1).perform();
+                id(led).turn_on().set_brightness(.3).perform();
+                break;
+              default:
+                id(led).turn_on().set_rgb(.3,.3,.3).perform();
+                id(led).turn_on().set_brightness(.3).perform();
+                ESP_LOGD("main", "Unknown status to set the led!");
+                break;
+            }
+          } else {
+            id(led).turn_off().perform();
+          }
     supports:
       mode: [COOL, HEAT, FAN_ONLY, DRY]
       fan_mode: [AUTO, QUIET, LOW, MEDIUM, HIGH]
@@ -76,14 +136,14 @@ climate:
       temperature_step:
         target_temperature: 1
         current_temperature: 0.1
+    hp_uptime_connection_sensor:
+      name: Uptime Connection (${mac})
     compressor_frequency_sensor:
-      name: ${name} Compressor Frequency
+      name: Compressor Frequency (${mac})
     vertical_vane_select:
-      name: ${name} Vertical Vane
-    #horizontal_vane_select:
-    #  name: ${name} Horizontal Vane
+      name: Vertical Vane (${mac})
     isee_sensor:
-      name: ${name} ISEE Sensor
+      name: ISEE Sensor (${mac})
     remote_temperature_timeout: 30min
     debounce_delay : 500ms
     update_interval: 4s
@@ -143,55 +203,17 @@ light:
     num_leds: 4
     rmt_channel: 1
     chipset: ws2812
-    restore_mode: ALWAYS_OFF
+#    restore_mode: ALWAYS_OFF
 
 switch:
   - platform: restart
     name: "Restart"
     id: device_restart
     disabled_by_default: True
-    entity_category: "Diagnostic"
+    entity_category: "Diagnostic"    
 
   - platform: template
-    id: eps32_s3_led_switch
-    name: Led switch #${led_switch}
+    id: led_switch
+    name: Status Led
     optimistic: true
     restore_mode: RESTORE_DEFAULT_OFF 
-    lambda: return id(eps32_s3_led_switch).state;
-    turn_on_action:
-      - light.turn_on:
-          id: led
-          brightness: !lambda |-
-            // output value must be in range 0 - 1.0
-            return id(led_brightness).state / 100.0;
-    turn_off_action:
-      - light.turn_off:
-          id: led
-
-
-number:
-    ## Set led brightness
-  - platform: template
-    id: led_brightness
-    name: Led brightness #${led_brightness}
-    icon: mdi:toggle-switch-variant
-    mode: slider
-    entity_category: config
-    optimistic: true
-    min_value: 0
-    max_value: 100
-    step: 10
-    initial_value: 70
-    restore_value: no
-    unit_of_measurement: "%"
-    on_value:
-      then:
-        - if:
-            condition:
-              light.is_on: led
-            then:
-              light.turn_on:
-                id: led
-                brightness: !lambda |-
-                  // output value must be in range 0 - 1.0
-                  return id(led_brightness).state / 100.0;
