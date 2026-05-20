@@ -23,14 +23,14 @@ logger:
     CN105Climate: INFO
     CN105: INFO
     SETTINGS: INFO
-    CYCLE : INFO  
-    Header: INFO 
+    CYCLE: INFO
+    Header: INFO
     EVT_SETS: INFO
     sensor: INFO
-    chkSum : INFO
-    WRITE : INFO
-    READ : INFO
-    Decoder : INFO
+    chkSum: INFO
+    WRITE: INFO
+    READ: INFO
+    Decoder: INFO
 
 # Enable Home Assistant API
 api:
@@ -42,6 +42,7 @@ ota:
 
 time:
   - platform: homeassistant
+    timezone: ${time_timezone}
 
 wifi:
   ssid: !secret wifi_ssid
@@ -57,7 +58,7 @@ captive_portal:
 web_server:
   version: 3
   include_internal: True
-  auth: 
+  auth:
     username: !secret esp_username
     password: !secret esp_password
 
@@ -83,7 +84,7 @@ external_components:
 
 climate:
   - platform: cn105
-    id: hp
+    id: hp_${mac}
     name: ${friendly_name}
     icon: mdi:heat-pump
     on_state:
@@ -95,7 +96,7 @@ climate:
                 id(led).turn_off().perform();
                 break;
               case 1: // CLIMATE_MODE_HEAT_COOL = 1
-                id(led).turn_off();
+                id(led).turn_off().perform();
                 break;
               case 2: // CLIMATE_MODE_COOL = 2
                 id(led).turn_on().set_rgb(0,0,1).perform();
@@ -106,11 +107,11 @@ climate:
                 id(led).turn_on().set_brightness(.3).perform();
                 break;
               case 4: // CLIMATE_MODE_FAN_ONLY = 4
-                id(led).turn_on().set_rgbw(0,0,0,1).perform();
+                id(led).turn_on().set_rgb(1,1,1).perform();
                 id(led).turn_on().set_brightness(.3).perform();
                 break;
               case 5: // CLIMATE_MODE_DRY = 5
-                id(led).turn_on().set_rgbw(.5,.7,1,.5).perform();
+                id(led).turn_on().set_rgb(.7,.85,1).perform();
                 id(led).turn_on().set_brightness(.3).perform();
                 break;
               case 6: // CLIMATE_MODE_AUTO = 6
@@ -137,15 +138,15 @@ climate:
         target_temperature: 1
         current_temperature: 0.1
     hp_uptime_connection_sensor:
-      name: Uptime Connection (${mac})
+      name: Uptime Connection
     compressor_frequency_sensor:
-      name: Compressor Frequency (${mac})
+      name: Compressor Frequency
     vertical_vane_select:
-      name: Vertical Vane (${mac})
+      name: Vertical Vane
     isee_sensor:
-      name: ISEE Sensor (${mac})
+      name: ISEE Sensor
     remote_temperature_timeout: 30min
-    debounce_delay : 500ms
+    debounce_delay: 500ms
     update_interval: 4s
 
 text_sensor:
@@ -154,43 +155,48 @@ text_sensor:
     hide_timestamp: True
     disabled_by_default: True
   - platform: wifi_info
-    ssid: 
+    ssid:
       name: "Connected SSID"
       id: ${id_name}_connected_ssid
-      entity_category: "Diagnostic"
+      entity_category: "diagnostic"
       disabled_by_default: True
     ip_address:
       name: "IP Address"
       id: ${id_name}_ip_addr
-      entity_category: "Diagnostic"
+      entity_category: "diagnostic"
       disabled_by_default: True
     bssid:
       name: "Connected BSSID"
       id: ${id_name}_BSSID
-      entity_category: "Diagnostic"
+      entity_category: "diagnostic"
       disabled_by_default: True
     mac_address:
       name: "Mac Wifi Address"
       id: ${id_name}_mac_addr
-      entity_category: "Diagnostic"
+      entity_category: "diagnostic"
       disabled_by_default: True
 
 sensor:
-  - platform: wifi_signal # Reports the WiFi signal strength/RSSI in dB
+  - platform: wifi_signal
     name: "WiFi Signal dB"
     id: ${id_name}_wifi_signal_db
     update_interval: 60s
-    entity_category: "Diagnostic"
+    entity_category: "diagnostic"
     disabled_by_default: True
 
-  - platform: copy # Reports the WiFi signal strength in %
+  - platform: copy
     source_id: ${id_name}_wifi_signal_db
     name: "WiFi Signal Percent"
     filters:
       - lambda: return min(max(2 * (x + 100.0), 0.0), 100.0);
     unit_of_measurement: "%"
-    entity_category: "Diagnostic"
+    entity_category: "diagnostic"
     device_class: ""
+    disabled_by_default: True
+
+  - platform: uptime
+    name: ${name} Uptime
+    entity_category: diagnostic
     disabled_by_default: True
 
 light:
@@ -209,11 +215,11 @@ button:
     name: "Restart"
     id: device_restart
     disabled_by_default: True
-    entity_category: "Diagnostic"    
+    entity_category: "diagnostic"
 
 switch:
   - platform: template
     id: led_switch
     name: Status Led
     optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF 
+    restore_mode: RESTORE_DEFAULT_OFF
