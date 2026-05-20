@@ -1,8 +1,8 @@
 substitutions:
   mac: <macaddress>
-  name: mitsubishi-ac-${mac}
+  name: msz-hj25-${mac}
   friendly_name: Mitsubishi MSZ-HJ25 (${mac})
-  id_name: hvac_${mac}
+  id_name: msz_hj_${mac}
   time_timezone: "Europe/Rome"
 
 esphome:
