@@ -65,7 +65,7 @@ The cable properly fits the Atom S3 Lite and can be adapted to fill the S05B-PAS
 ![IMG_20250209_174248](https://github.com/user-attachments/assets/3ab83282-8e8d-403a-a50b-a13560b6ab16)
 
 As a reference, you will find a sample configuration of the ESPHome device:<br>
-[mitsubishi-hvac-sample.yaml ](mitsubishi-hvac-sample.yaml)<br>
+[msz-hj25-sample.yaml](msz-hj25-sample.yaml)<br>
 Please replace the <macaddress> or the names on the _substitutions_ section. Considering I have 2 splits I make use of the lasst 6 char of the mac address to get different names and ids.<br>
 This yaml uses the ATOM S3 Lite led as a status led. I added a lambda function to deliver different colors depending from the mode of the HVAC (OFF, FAN_ONLY, DRY; COOL, HEAT).<br>
 A "Status Led" switch is used to keep the led always off.
