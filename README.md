@@ -68,10 +68,12 @@ I finally got some S05B-PASK-2 connectors and I was albe to replace them on one 
 <img width="4096" height="2304" alt="IMG20260524134138" src="https://github.com/user-attachments/assets/1e226339-2232-4ffd-8bf6-4a535ccdcc68" />
 
 
-As a reference, you will find a sample configuration of the ESPHome device:<br>
+<p>As a reference, you will find a sample configuration of the ESPHome device:<br>
 [msz-hj25-sample.yaml](msz-hj25-sample.yaml)<br>
 Please replace the <macaddress> or the names on the _substitutions_ section. Considering I have 2 splits I make use of the lasst 6 char of the mac address to get different names and ids.<br>
 This yaml uses the ATOM S3 Lite led as a status led. I added a lambda function to deliver different colors depending from the mode of the HVAC (OFF, FAN_ONLY, DRY; COOL, HEAT).<br>
-A "Status Led" switch is used to keep the led always off.
+A "Status Led" switch is used to keep the led always off.</p>
+This configuration has been tested with ESPHome 2026.5.4 and is fully working.<br>
+Please find a reference config file also for MSZ-AY## models.
 
 
