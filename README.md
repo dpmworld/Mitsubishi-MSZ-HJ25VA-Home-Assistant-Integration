@@ -4,11 +4,11 @@ Modding and integrating Mitsubishi MSZ-HJ25VA HVAC into Home Assistant via ESPHo
 # Background information
 My old MSZ-HJ25VA air conditioner does not support WiFi module. It looks like all the HVACs created after do have a port to connect to the WiFi module.<BR>
 I started searching online and I found some interesting information about Mitsubishi AC in general.
-Fist of all, all the Mitsubishi HVACs use a connector called CN105 that is used to connect the WiFi module. And there is a very nice project on github that enable the support of this connector using an ESP device:
+Frist of all, all the Mitsubishi HVACs use a connector called CN105 that is used to connect the WiFi module. And there is a very nice project on github that enable the support of this connector using an ESP device:
 <p>https://github.com/SwiCago/HeatPump (Arduino library to control Mitsubishi Heat Pumps via connector CN105.)</p>
 <p>This library is meant for those who likes coding with the arduino IDE, that is not (yet) my case. So I digged a little more and I found another project on github that leverages the SwiCago and embeds into ESPHome:</p>
 <p>https://github.com/geoffdavis/esphome-mitsubishiheatpump (ESPHome Climate Component for Mitsubishi Heatpumps using direct serial connection)</p>
-<p>This project looks very promising. I further found a fork that seems to add few more features and is slightly more up to date:</p>
+<p>This project looked very promising. I further found a fork that seems to add few more features and is slightly more up to date:</p>
 <p>https://github.com/echavet/MitsubishiCN105ESPHome (ESPHome firmware inspired by GeoffDavis’s esphome-mitsubishiheatpump, directly integrating the SwiCago library within its codebase)</p>
 <p>From a software point of view, it looks like you can connect a ESP device and manage you HVAC without the need to buy expensive modules like the MAC-587IF-E.<br>
 With those projects in my mind, I started looking if there were an option to replace the logic board of my MSZ-HJ25VA or if I had to abandon the idea of connecting it to my Home Assistant. I found several details on how to use IR component, eventually the SmartIR integration for Home Assistant, but using infrared lacks the ability to check the status of the heat pump: you can send commands but you do not know is some changed the configurations using the remote.</p>
@@ -24,7 +24,7 @@ Besides being able to solder (and you will need to solder 2 SMD resistors and a 
 - Optional PAP-05V-S connectors (https://it.aliexpress.com/item/1005007784137238.html)
 - ATOMS3 Lite ESP32S3 M5Stack (https://it.aliexpress.com/item/1005005177952629.html)
 - 4 Pin Jumper Wire HY2.0mm Pitch Pin Universal Grove Buckled Cable 20cm (https://www.amazon.it/dp/B0D4PFPSMY?ref=ppx_yo2ov_dt_b_fed_asin_title)
-- 0x 0603 SMD 1200ohm resistor (https://www.amazon.it/dp/B0DGQ6GKMD?ref=ppx_yo2ov_dt_b_fed_asin_title)
+- 2x 0603 SMD 1200ohm resistor (https://www.amazon.it/dp/B0DGQ6GKMD?ref=ppx_yo2ov_dt_b_fed_asin_title)
 
 <p>I choosed the Atom S3 Lite because it is very small and can be connected easly with the Grove 4 pin cable. If you want the best result, you can replace one connector of the grove cable and use the proper PAP-05V-S connector: we need only 4 wires. Alternatively you can cut one edge of the connector and the clip to let it fint into the S05B-PASK-2 connector soldered on the board.<br>
 I wasnt able to find a bounce of 10 120ohm SMD 0603 resistor, so I bought a kit.</p>
