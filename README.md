@@ -64,6 +64,10 @@ Here is the M5Stack Atom S3 Lite with a 4 pin Groove connector:<br>
 The cable properly fits the Atom S3 Lite and can be adapted to fill the S05B-PASK-2 on the logic board by cutting the side border (near the black cable) and the hook:<br>
 ![IMG_20250209_174248](https://github.com/user-attachments/assets/3ab83282-8e8d-403a-a50b-a13560b6ab16)
 
+I finally got some S05B-PASK-2 connectors and I was albe to replace them on one side of the groove calbe. This is how it looks at the end:<br>
+<img width="4096" height="2304" alt="IMG20260524134138" src="https://github.com/user-attachments/assets/1e226339-2232-4ffd-8bf6-4a535ccdcc68" />
+
+
 As a reference, you will find a sample configuration of the ESPHome device:<br>
 [msz-hj25-sample.yaml](msz-hj25-sample.yaml)<br>
 Please replace the <macaddress> or the names on the _substitutions_ section. Considering I have 2 splits I make use of the lasst 6 char of the mac address to get different names and ids.<br>
