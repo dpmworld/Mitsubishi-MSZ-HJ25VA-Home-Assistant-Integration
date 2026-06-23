@@ -1,79 +1,207 @@
-# Mitsubishi MSZ-HJ25VA Home-Assistant integration
-Modding and integrating Mitsubishi MSZ-HJ25VA HVAC into Home Assistant via ESPHome
+# Mitsubishi MSZ-HJ25VA — Home Assistant Integration
 
-# Background information
-My old MSZ-HJ25VA air conditioner does not support WiFi module. It looks like all the HVACs created after do have a port to connect to the WiFi module.<BR>
-I started searching online and I found some interesting information about Mitsubishi AC in general.
-Frist of all, all the Mitsubishi HVACs use a connector called CN105 that is used to connect the WiFi module. And there is a very nice project on github that enable the support of this connector using an ESP device:
-<p>https://github.com/SwiCago/HeatPump (Arduino library to control Mitsubishi Heat Pumps via connector CN105.)</p>
-<p>This library is meant for those who likes coding with the arduino IDE, that is not (yet) my case. So I digged a little more and I found another project on github that leverages the SwiCago and embeds into ESPHome:</p>
-<p>https://github.com/geoffdavis/esphome-mitsubishiheatpump (ESPHome Climate Component for Mitsubishi Heatpumps using direct serial connection)</p>
-<p>This project looked very promising. I further found a fork that seems to add few more features and is slightly more up to date:</p>
-<p>https://github.com/echavet/MitsubishiCN105ESPHome (ESPHome firmware inspired by GeoffDavis’s esphome-mitsubishiheatpump, directly integrating the SwiCago library within its codebase)</p>
-<p>From a software point of view, it looks like you can connect a ESP device and manage you HVAC without the need to buy expensive modules like the MAC-587IF-E.<br>
-With those projects in my mind, I started looking if there were an option to replace the logic board of my MSZ-HJ25VA or if I had to abandon the idea of connecting it to my Home Assistant. I found several details on how to use IR component, eventually the SmartIR integration for Home Assistant, but using infrared lacks the ability to check the status of the heat pump: you can send commands but you do not know is some changed the configurations using the remote.</p>
-<p>I run into this post on the HA community:</p>
-<p>https://community.home-assistant.io/t/mitsubishi-ac-with-wemos-d1-mini-pro/107007/246?page=13</p>
-<p>where user <i>vperas</i> found that the logic board of his MSZ-HJ35VA (the same family, jost more BTUs!) has the layout of the CN105 connector printed on the board: it just lack 2 resistors and the connector itself and this was confirmed in this topic too, although many comments were deleted but the owner being off-topic:</p>
-<p>https://github.com/SwiCago/HeatPump/issues/13</p>
-<p>So let's start and see how I did it.</p>
+Modding and integrating Mitsubishi MSZ-HJ25VA HVAC into Home Assistant via ESPHome.
 
-# Requirements
-Besides being able to solder (and you will need to solder 2 SMD resistors and a connector), I bought the following items:
-- S05B-PASK-2 connectors (https://it.aliexpress.com/item/1005008145895889.html)
-- Optional PAP-05V-S connectors (https://it.aliexpress.com/item/1005007784137238.html)
-- ATOMS3 Lite ESP32S3 M5Stack (https://it.aliexpress.com/item/1005005177952629.html)
-- 4 Pin Jumper Wire HY2.0mm Pitch Pin Universal Grove Buckled Cable 20cm (https://www.amazon.it/dp/B0D4PFPSMY?ref=ppx_yo2ov_dt_b_fed_asin_title)
-- 2x 0603 SMD 1200ohm resistor (https://www.amazon.it/dp/B0DGQ6GKMD?ref=ppx_yo2ov_dt_b_fed_asin_title)
+---
 
-<p>I choosed the Atom S3 Lite because it is very small and can be connected easly with the Grove 4 pin cable. If you want the best result, you can replace one connector of the grove cable and use the proper PAP-05V-S connector: we need only 4 wires. Alternatively you can cut one edge of the connector and the clip to let it fint into the S05B-PASK-2 connector soldered on the board.<br>
-I wasnt able to find a bounce of 10 120ohm SMD 0603 resistor, so I bought a kit.</p>
+## Background
 
-# Opening the MSZ-HJ25VA unit
-Opening the unit is fairly simple: you need to remove 2 small covers on the bottom left and right under the vane and unscrew 2 philips screws.<br>
-<img src="https://github.com/user-attachments/assets/7458a613-9210-45fd-a72b-26e8fde128eb" width=40% height=40%>
-<img src="https://github.com/user-attachments/assets/131faec3-24f3-4d79-abce-e5b3613fabc1" width=40% height=40%>
+My old MSZ-HJ25VA air conditioner does not support a WiFi module. It looks like all HVACs produced after a certain point do have a port for connecting one.
 
-Slightly pull from the bottom after checking a push/pull plastic lock in the middle of the vane.<br>
-<img src="https://github.com/user-attachments/assets/4edb1b67-ed52-4e61-a8e8-47cc91f4f9df" width=60% height=60%>
+After searching online I found some interesting information about Mitsubishi ACs in general. All Mitsubishi HVACs use a connector called **CN105** to connect the WiFi module. There is a very nice project on GitHub that enables support for this connector using an ESP device:
 
-On the left you will have access to the logic board:<br>
-<img src="https://github.com/user-attachments/assets/94275b12-6e80-4315-827e-07e6bd1de4b8" width=40% height=40%>
+- [SwiCago/HeatPump](https://github.com/SwiCago/HeatPump) — Arduino library to control Mitsubishi Heat Pumps via connector CN105.
 
-Unplug the three connectors and remove the board with the plastic cover: on the bottom left you can unlock the plastic. Gently turn the board and, once opened on the side, pull it up and remove it from the chassy. Pay attention the remove gently all the wires from the plastic.
+This library targets Arduino IDE users, which is not (yet) my case. Digging further I found another project that leverages SwiCago and embeds it into ESPHome:
 
-# The logic board
-Once in your hand, the logc board should look like this:<br>
-<img src="https://github.com/user-attachments/assets/acda0ef4-6f64-429a-9626-242f961b7dd8" width=40% height=40%>
-<img src="https://github.com/user-attachments/assets/b663f6fd-93d8-4fb3-bade-142b75e21e14" width=40% height=40%><br>
+- [geoffdavis/esphome-mitsubishiheatpump](https://github.com/geoffdavis/esphome-mitsubishiheatpump) — ESPHome Climate Component for Mitsubishi Heatpumps using direct serial connection.
 
-First clean the hole where you'll need to place the connector and the resistors:<br>
-<img src="https://github.com/user-attachments/assets/d0e0b3cc-f719-41e4-8046-34d8eae2daf6" width=40% height=40%>
-<img src="https://github.com/user-attachments/assets/8f1672e3-6476-4efb-9a9f-018c4e936e10" width=40% height=40%>
+Even more promising is a fork that adds a few extra features and is slightly more up to date:
 
-Remove the flux with isopropilic alchool (I took the picture before cleaning it), and the solder the connector and the 2 resistors. Resistors are 0603 SMD rated 1200 ohm (the lable on top is 122).<br>
-<img src="https://github.com/user-attachments/assets/274a48a7-52f9-4889-9ba8-d15307db80b1" width=40% height=40%>
-<img src="https://github.com/user-attachments/assets/e45d8c9d-b9ae-4f5f-b67d-cc18b85b65a3" width=40% height=40%>
+- [echavet/MitsubishiCN105ESPHome](https://github.com/echavet/MitsubishiCN105ESPHome) — ESPHome firmware inspired by GeoffDavis's project, directly integrating the SwiCago library within its codebase.
 
-these are not my best tin welds, but they works!
+From a software perspective, it is possible to connect an ESP device and manage the HVAC without buying expensive modules like the **MAC-587IF-E**.
 
-# The ATOM S3 Lite with ESPHome
-Here is the M5Stack Atom S3 Lite with a 4 pin Groove connector:<br>
-![IMG_20250209_173758](https://github.com/user-attachments/assets/42ae5aa2-9ee2-4901-b587-da40df8a0344)
+With those projects in mind, I started looking for an option to add the CN105 connector to my MSZ-HJ25VA. I found several approaches based on the IR component and the SmartIR integration for Home Assistant, but using infrared lacks the ability to check the actual status of the heat pump: you can send commands but you cannot know if someone changed the configuration via the remote.
 
-The cable properly fits the Atom S3 Lite and can be adapted to fill the S05B-PASK-2 on the logic board by cutting the side border (near the black cable) and the hook:<br>
-![IMG_20250209_174248](https://github.com/user-attachments/assets/3ab83282-8e8d-403a-a50b-a13560b6ab16)
+I then found this post on the HA community forum:
 
-I finally got some S05B-PASK-2 connectors and I was albe to replace them on one side of the groove calbe. This is how it looks at the end:<br>
-<img width="4096" height="2304" alt="IMG20260524134138" src="https://github.com/user-attachments/assets/1e226339-2232-4ffd-8bf6-4a535ccdcc68" />
+- [Mitsubishi AC with Wemos D1 Mini Pro — HA Community](https://community.home-assistant.io/t/mitsubishi-ac-with-wemos-d1-mini-pro/107007/246?page=13)
 
+User *vperas* found that the logic board of the **MSZ-HJ35VA** (same family, just more BTUs!) has the CN105 connector layout printed on the board — it only lacks 2 resistors and the connector itself. This was confirmed in the following issue as well (many comments were deleted by the owner for being off-topic):
 
-<p>As a reference, you will find a sample configuration of the ESPHome device:<br>
-[msz-hj25-sample.yaml](msz-hj25-sample.yaml)<br>
-Please replace the <macaddress> or the names on the _substitutions_ section. Considering I have 2 splits I make use of the lasst 6 char of the mac address to get different names and ids.<br>
-This yaml uses the ATOM S3 Lite led as a status led. I added a lambda function to deliver different colors depending from the mode of the HVAC (OFF, FAN_ONLY, DRY; COOL, HEAT).<br>
-A "Status Led" switch is used to keep the led always off.</p>
-This configuration has been tested with ESPHome 2026.5.4 and is fully working.<br>
-Please find a reference config file also for MSZ-AY## models.
+- [SwiCago/HeatPump — Issue #13](https://github.com/SwiCago/HeatPump/issues/13)
 
+---
 
+## Requirements
+
+Besides soldering skills (you will need to solder 2 SMD resistors and a connector), the following items are needed:
+
+| Item | Link |
+|---|---|
+| S05B-PASK-2 connectors | [AliExpress](https://it.aliexpress.com/item/1005008145895889.html) |
+| PAP-05V-S connectors *(optional)* | [AliExpress](https://it.aliexpress.com/item/1005007784137238.html) |
+| ATOMS3 Lite ESP32S3 M5Stack | [AliExpress](https://it.aliexpress.com/item/1005005177952629.html) |
+| 4-pin Jumper Wire HY2.0mm Pitch Grove Cable 20 cm | [Amazon.it](https://www.amazon.it/dp/B0D4PFPSMY) |
+| 2× 0603 SMD 1200 Ω resistors | [Amazon.it](https://www.amazon.it/dp/B0DGQ6GKMD) |
+
+The **Atom S3 Lite** was chosen because it is very compact and connects easily with the Grove 4-pin cable. For the best result, replace one connector of the Grove cable with the proper **PAP-05V-S** connector (only 4 wires are needed). Alternatively, trim one side of the connector and clip to let it fit into the **S05B-PASK-2** connector soldered on the board.
+
+> Note: 1200 Ω SMD 0603 resistors are labelled **122** on the top.
+
+---
+
+## Opening the MSZ-HJ25VA Unit
+
+Opening the unit is fairly simple:
+
+1. Remove the 2 small covers on the bottom-left and bottom-right under the vane.
+2. Unscrew the 2 Phillips screws.
+
+<img src="https://github.com/user-attachments/assets/7458a613-9210-45fd-a72b-26e8fde128eb" alt="Bottom covers" width="45%">
+<img src="https://github.com/user-attachments/assets/131faec3-24f3-4d79-abce-e5b3613fabc1" alt="Screws" width="45%">
+
+3. Slightly pull from the bottom after checking the push/pull plastic lock in the middle of the vane.
+
+<img src="https://github.com/user-attachments/assets/4edb1b67-ed52-4e61-a8e8-47cc91f4f9df" alt="Pull from bottom" width="45%">
+
+4. On the left you will have access to the logic board.
+
+<img src="https://github.com/user-attachments/assets/94275b12-6e80-4315-827e-07e6bd1de4b8" alt="Logic board access" width="45%">
+
+5. Unplug the three connectors and remove the board with its plastic cover — unlock the plastic at the bottom-left. Gently turn the board, open it on the side, pull it up and remove it from the chassis. Take care to gently route all wires clear of the plastic.
+
+---
+
+## The Logic Board
+
+Once removed, the logic board should look like this:
+
+<img src="https://github.com/user-attachments/assets/acda0ef4-6f64-429a-9626-242f961b7dd8" alt="Logic board front" width="45%">
+<img src="https://github.com/user-attachments/assets/b663f6fd-93d8-4fb3-bade-142b75e21e14" alt="Logic board back" width="45%">
+
+First, clean the area where the connector and resistors will be placed:
+
+<img src="https://github.com/user-attachments/assets/d0e0b3cc-f719-41e4-8046-34d8eae2daf6" alt="Cleaned area 1" width="45%">
+<img src="https://github.com/user-attachments/assets/8f1672e3-6476-4efb-9a9f-018c4e936e10" alt="Cleaned area 2" width="45%">
+
+Remove flux with isopropyl alcohol, then solder the connector and the 2 resistors (1200 Ω, 0603 SMD, labelled **122**):
+
+<img src="https://github.com/user-attachments/assets/274a48a7-52f9-4889-9ba8-d15307db80b1" alt="Soldering 1" width="45%">
+<img src="https://github.com/user-attachments/assets/e45d8c9d-b9ae-4f5f-b67d-cc18b85b65a3" alt="Soldering 2" width="45%">
+
+> These are not my best tin welds, but they work!
+
+---
+
+## ATOM S3 Lite with ESPHome
+
+The M5Stack Atom S3 Lite with the 4-pin Grove connector:
+
+<img src="https://github.com/user-attachments/assets/42ae5aa2-9ee2-4901-b587-da40df8a0344" alt="Atom S3 Lite" width="45%">
+
+The cable fits the Atom S3 Lite and can be adapted to fit the **S05B-PASK-2** on the logic board by cutting the side border (near the black cable) and the hook:
+
+<img src="https://github.com/user-attachments/assets/3ab83282-8e8d-403a-a50b-a13560b6ab16" alt="Cable adaptation" width="45%">
+
+After sourcing proper **S05B-PASK-2** connectors, one side of the Grove cable was replaced. Final result:
+
+<img src="https://github.com/user-attachments/assets/1e226339-2232-4ffd-8bf6-4a535ccdcc68" alt="Final assembly" width="45%">
+
+---
+
+## ESPHome Configuration
+
+A sample ESPHome configuration for this device is available here:
+
+- [`msz-hj25-sample.yaml`](msz-hj25-sample.yaml)
+
+**Before flashing**, replace `<macaddress>` and any names in the `substitutions` section. Since I have 2 splits, I use the last 6 characters of the MAC address to generate unique names and IDs.
+
+> Tested with **ESPHome 2026.5.4** — fully working.
+
+A reference config file for **MSZ-AY## models** is also available in the repository.
+
+---
+
+### Exposed Entities in Home Assistant
+
+#### 🌡️ Climate entity
+
+The main entity is a standard HA `climate` object exposed via the `cn105` platform:
+
+| Attribute | Values |
+|---|---|
+| **Modes** | `OFF`, `COOL`, `HEAT`, `FAN_ONLY`, `DRY` |
+| **Fan modes** | `AUTO`, `QUIET`, `LOW`, `MEDIUM`, `HIGH` |
+| **Swing modes** | `OFF`, `VERTICAL` |
+| **Target temperature range** | 16 °C – 31 °C (1 °C steps) |
+| **Current temperature resolution** | 0.1 °C |
+| **Update interval** | every 4 s |
+
+#### 📊 Sensors
+
+| Entity | Type | Notes |
+|---|---|---|
+| **Compressor Frequency** | `sensor` | Frequency (Hz) reported by the heat pump |
+| **ISEE Sensor** | `binary_sensor` | iSee motion sensor presence detection |
+| **Uptime Connection** | `sensor` | Cumulative uptime of the CN105 serial connection |
+| **WiFi Signal dB** | `sensor` | RSSI in dBm — diagnostic, disabled by default |
+| **WiFi Signal Percent** | `sensor` | RSSI converted to 0–100 % — diagnostic, disabled by default |
+| **Uptime** | `sensor` | Device uptime — diagnostic, disabled by default |
+
+#### 🎛️ Controls
+
+| Entity | Type | Notes |
+|---|---|---|
+| **Vertical Vane** | `select` | Direct vane position control (independent of swing mode) |
+| **Status Led** | `switch` | Enables/disables the ATOM S3 Lite onboard LED; default OFF |
+| **Restart** | `button` | Reboots the ESP device — diagnostic, disabled by default |
+
+#### ℹ️ Diagnostic text sensors
+
+| Entity | Notes |
+|---|---|
+| **ESPHome version** | Firmware version string — disabled by default |
+| **IP Address** | Current IP of the ESP — diagnostic, disabled by default |
+| **Connected SSID** | Wi-Fi network name — diagnostic, disabled by default |
+| **Connected BSSID** | Access point MAC — diagnostic, disabled by default |
+| **Mac Wifi Address** | ESP Wi-Fi MAC — diagnostic, disabled by default |
+
+#### 💡 Status LED colour map
+
+The onboard RGB LED of the ATOM S3 Lite reflects the current HVAC mode when the **Status Led** switch is enabled:
+
+| Mode | Colour |
+|---|---|
+| `OFF` | Off |
+| `COOL` | Blue |
+| `HEAT` | Red |
+| `FAN_ONLY` | White |
+| `DRY` | Light blue |
+| `AUTO / HEAT_COOL` | Cyan |
+
+---
+
+## Credits
+
+### Eric Chavet — [MitsubishiCN105ESPHome](https://github.com/echavet/MitsubishiCN105ESPHome)
+
+The core of this integration would not exist without the outstanding work of **Eric Chavet** and his project **MitsubishiCN105ESPHome**.
+
+Eric took Geoffrey Davis's pioneering [esphome-mitsubishiheatpump](https://github.com/geoffdavis/esphome-mitsubishiheatpump) component as inspiration and went a significant step further: rather than wrapping the SwiCago library as an external dependency, he directly embedded it into an ESPHome-native codebase. The result is a robust, actively maintained firmware that exposes full climate control — mode, fan speed, vane direction, temperature — as proper ESPHome entities, with clean Home Assistant integration out of the box.
+
+His project (935+ stars, 168+ forks as of mid-2026) has become the go-to solution for anyone looking to connect a Mitsubishi heat pump via CN105 without proprietary cloud modules. The quality of the code, the detailed documentation, and his continued responsiveness to issues and community discussions make it an exceptional open-source contribution.
+
+**Thank you, Eric.**
+
+---
+
+### Acknowledgements
+
+| Project | Author | Role in this build |
+|---|---|---|
+| [MitsubishiCN105ESPHome](https://github.com/echavet/MitsubishiCN105ESPHome) | Eric Chavet | ESPHome firmware used on the ATOM S3 Lite |
+| [esphome-mitsubishiheatpump](https://github.com/geoffdavis/esphome-mitsubishiheatpump) | Geoffrey Davis | Original ESPHome climate component |
+| [HeatPump](https://github.com/SwiCago/HeatPump) | SwiCago | Arduino CN105 serial library at the foundation of it all |
