@@ -50,6 +50,9 @@ The **Atom S3 Lite** was chosen because it is very compact and connects easily w
 
 > Note: 1200 Ω SMD 0603 resistors are labelled **122** on the top.
 
+> The vlaues of the resistors is confirmed to be 1.2 kΩ as of the issue [MSZ-HJ35VA CN105 mod: resistor values confirmation and ATOM S3 Lite reliability
+](https://github.com/dpmworld/Mitsubishi-MSZ-HJ25VA-Home-Assistant-Integration/issues/3) opened by [kitopopo](https://github.com/kitopopo)
+
 ---
 
 ## Opening the MSZ-HJ25VA Unit
