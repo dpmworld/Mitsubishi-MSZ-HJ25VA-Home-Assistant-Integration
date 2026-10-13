@@ -48,8 +48,10 @@ Besides soldering skills (you will need to solder 2 SMD resistors and a connecto
 
 The **Atom S3 Lite** was chosen because it is very compact and connects easily with the Grove 4-pin cable. For the best result, replace one connector of the Grove cable with the proper **PAP-05V-S** connector (only 4 wires are needed). Alternatively, trim one side of the connector and clip to let it fit into the **S05B-PASK-2** connector soldered on the board.
 
-> Note: 1200 Ω SMD 0603 resistors are labelled **122** on the top.
+> [!NOTE] 
+> 1200 Ω SMD 0603 resistors are labelled **122** on the top.
 
+> [!TIP]
 > The vlaues of the resistors is confirmed to be 1.2 kΩ as of the issue [MSZ-HJ35VA CN105 mod: resistor values confirmation and ATOM S3 Lite reliability
 ](https://github.com/dpmworld/Mitsubishi-MSZ-HJ25VA-Home-Assistant-Integration/issues/3) opened by [kitopopo](https://github.com/kitopopo)
 
